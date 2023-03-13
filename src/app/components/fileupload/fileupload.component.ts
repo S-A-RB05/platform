@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { Strategy } from 'src/app/models/Strategy';
 
 @Component({
   selector: 'app-fileupload',
@@ -11,6 +12,10 @@ export class FileuploadComponent {
   fileName = '';
 
   constructor(private http: HttpClient) {}
+
+  
+
+  readonly headers = new HttpHeaders().set('Content-Type', 'application/json');
 
   onFileSelected(event) {
 
@@ -28,7 +33,11 @@ export class FileuploadComponent {
             console.log(reader.result);
           }
 
-          const upload$ = this.http.post("http://localhost:10000/create", reader.result);
+          const requestBody = JSON.stringify(new Strategy(file.name, "test script text blablablabla"))
+
+          console.log(requestBody);
+
+          const upload$ = this.http.post<Strategy>("http://localhost:10000/create", requestBody);
 
           upload$.subscribe();
       }
