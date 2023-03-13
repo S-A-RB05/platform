@@ -30,16 +30,19 @@ export class FileuploadComponent {
 
           reader.readAsDataURL(file);
           reader.onload = () => {
-            console.log(reader.result);
+            var decode = reader.result as string
+            var array = decode.split(',')
+            var script = array[1];
+            var strat = new Strategy(file.name, script)
+            const requestBody = JSON.stringify(strat)
+
+            console.log(atob(script));
+
+            const upload$ = this.http.post("http://localhost:10000/create", requestBody, {responseType: 'text'}); 
+            upload$.subscribe();
           }
 
-          const requestBody = JSON.stringify(new Strategy(file.name, "test script text blablablabla"))
-
-          console.log(requestBody);
-
-          const upload$ = this.http.post<Strategy>("http://localhost:10000/create", requestBody);
-
-          upload$.subscribe();
+          
       }
   }
 }
