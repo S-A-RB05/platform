@@ -18,6 +18,9 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { VerifyEmailComponent } from './components/verify-email/verify-email.component';
 import { AuthService } from './shared/services/auth.service';
 import { ProfileComponent } from './components/profile/profile.component';
+import { FileuploadComponent } from './components/fileupload/fileupload.component';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -28,6 +31,7 @@ import { ProfileComponent } from './components/profile/profile.component';
     ForgotPasswordComponent,
     VerifyEmailComponent,
     ProfileComponent,
+    FileuploadComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,8 +44,9 @@ import { ProfileComponent } from './components/profile/profile.component';
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireDatabaseModule,
+    HttpClientModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, HttpClientModule],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
