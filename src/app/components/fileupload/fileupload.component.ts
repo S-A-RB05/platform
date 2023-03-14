@@ -27,9 +27,11 @@ export class FileuploadComponent {
 
       reader.readAsDataURL(file);
       reader.onload = () => {
-        var script = this.ReaderToContentString(reader);
-        this.variables = this.ParseScriptForInputVariables(script);
-        var strat = new Strategy(file.name, script);
+        var base64Script = this.ReaderToContentBase64(reader);
+        var stringScript = this.DecodeBase64(base64Script);
+        this.variables = this.ParseScriptForInputVariables(stringScript);
+
+        var strat = new Strategy(file.name, base64Script);
         const requestBody = JSON.stringify(strat);
 
         const upload$ = this.http.post(
@@ -42,11 +44,18 @@ export class FileuploadComponent {
     }
   }
 
-  ReaderToContentString(reader: FileReader) {
+  ReaderToContentString(reader: FileReader): string {
     var decode = reader.result as string;
     //encoded files always start with some information on how it was encoded, following by a ",".
     var array = decode.split(',');
     return atob(array[1]);
+  }
+
+  ReaderToContentBase64(reader: FileReader): string {
+    var decode = reader.result as string;
+    //encoded files always start with some information on how it was encoded, following by a ",".
+    var array = decode.split(',');
+    return array[1];
   }
 
   //assumes every input variable is places at the beginning of a line inside of the EA script
@@ -70,6 +79,13 @@ export class FileuploadComponent {
       }
     });
     return variables;
+  }
+
+  DecodeBase64(baseString): string {
+    const bytes = Uint8Array.from(window.atob(baseString), (c) =>
+      c.charCodeAt(0)
+    );
+    return new TextDecoder().decode(bytes);
   }
 
   isHighlightable(type: string): boolean {
