@@ -31,6 +31,7 @@ export class FileuploadComponent {
           reader.readAsDataURL(file);
           reader.onload = () => {
             var decode = reader.result as string
+            //encoded files always start with some information on how it was encoded, following by a ",".
             var array = decode.split(',')
             var script = array[1];
             var strat = new Strategy(file.name, script)
