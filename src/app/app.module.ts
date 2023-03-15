@@ -20,6 +20,7 @@ import { AuthService } from './shared/services/auth.service';
 import { ProfileComponent } from './components/profile/profile.component';
 import { FileuploadComponent } from './components/fileupload/fileupload.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { HttpClientModule } from '@angular/common/http';
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireDatabaseModule,
-    HttpClientModule
+    HttpClientModule,
+    CoolSocialLoginButtonsModule,
   ],
   providers: [AuthService, HttpClientModule],
   bootstrap: [AppComponent],
