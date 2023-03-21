@@ -1,12 +1,11 @@
-FROM node:18-alpine
-ENV NODE_ENV=production
-
-WORKDIR /app
-
-COPY ["package.json", "package-lock.json*", "./"]
-
-RUN npm install --production
-
+### STAGE 1: Build ###
+FROM node:12.7-alpine AS build
+WORKDIR /usr/src/app
+COPY package.json package-lock.json ./
+RUN npm install
 COPY . .
-
-CMD [ "ng serve" ]
+RUN npm run build
+### STAGE 2: Run ###
+FROM nginx:1.17.1-alpine
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /usr/src/app/dist/platform /usr/share/nginx/html
