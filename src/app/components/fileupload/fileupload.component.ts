@@ -9,39 +9,84 @@ import { Strategy } from 'src/app/models/Strategy';
   styleUrls: ['./fileupload.component.css'],
 })
 export class FileuploadComponent {
-  fileName = '';
+  mqFileName = '';
+  exFileName = '';
   variables: InputVariable[] = [];
 
   constructor(private http: HttpClient) {}
 
   readonly headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-  onFileSelected(event) {
+  private mqFile: File;
+  private exFile: File;
+  private uploadedStrat: Strategy = new Strategy('test', 'test', 'test');
+
+  onMQFileSelected(event) {
     const file: File = event.target.files[0];
 
     if (file) {
-      this.fileName = file.name;
+      this.mqFile = file;
+      this.mqFileName = this.mqFile.name;
 
-      var blob = '';
       const reader = new FileReader();
 
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(this.mqFile);
       reader.onload = () => {
         var base64Script = this.ReaderToContentBase64(reader);
         var stringScript = this.DecodeBase64(base64Script);
         this.variables = this.ParseScriptForInputVariables(stringScript);
 
-        var strat = new Strategy(file.name, base64Script);
-        const requestBody = JSON.stringify(strat);
-
-        const upload$ = this.http.post(
-          'http://localhost:10000/create',
-          requestBody,
-          { responseType: 'text' }
-        );
-        upload$.subscribe();
+        this.uploadedStrat.name = this.mqFile.name;
+        this.uploadedStrat.mq = base64Script;
+        if (this.mqFile != undefined && this.exFile != undefined) {
+          this.InitateUpload(this.uploadedStrat);
+        } else {
+          console.log('not both files have a value yet');
+        }
       };
     }
+  }
+
+  onEXFileSelected(event) {
+    const file: File = event.target.files[0];
+
+    if (file) {
+      this.exFile = file;
+      this.exFileName = this.exFile.name;
+
+      const reader = new FileReader();
+
+      reader.readAsDataURL(this.exFile);
+      reader.onload = () => {
+        var base64Script = this.ReaderToContentBase64(reader);
+        var stringScript = this.DecodeBase64(base64Script);
+        this.variables = this.ParseScriptForInputVariables(stringScript);
+
+        this.uploadedStrat.name = this.exFile.name;
+        this.uploadedStrat.ex = base64Script;
+        if (this.mqFile != undefined && this.exFile != undefined) {
+          this.InitateUpload(this.uploadedStrat);
+        } else {
+          console.log('not both files have a value yet');
+          console.log(this.mqFile);
+          console.log(this.exFile);
+        }
+      };
+    }
+  }
+
+  InitateUpload(strat: Strategy) {
+    console.log('initiated upload!');
+    console.log(this.mqFile);
+    console.log(this.exFile);
+    const requestBody = JSON.stringify(strat);
+
+    const upload$ = this.http.post(
+      'http://localhost:10000/create',
+      requestBody,
+      { responseType: 'text' }
+    );
+    upload$.subscribe();
   }
 
   ReaderToContentString(reader: FileReader): string {
