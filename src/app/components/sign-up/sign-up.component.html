@@ -1,5 +1,6 @@
 <div class="displayTable">
   <div class="displayTableCell">
+    <form>
     <div class="authBlock">
       <h3>Sign Up</h3>
       <div class="formGroup">
@@ -28,19 +29,13 @@
           (click)="authService.SignUp(userEmail.value, userPwd.value)"
         />
       </div>
-      <div class="formGroup">
-        <span class="or"><span class="orInner">Or</span></span>
-      </div>
       <!-- Continue with Google -->
       <div class="formGroup">
-        <button
-          type="button"
-          class="btn googleBtn"
-          (click)="authService.GoogleAuth()"
-        >
-          <i class="fab fa-google-plus-g"></i>
-          Continue with Google
-        </button>
+        <div class="spn">
+        <cool-google-button color="dark" (click)="authService.GoogleAuth()">
+          Login with Google
+        </cool-google-button>
+      </div>
       </div>
     </div>
     <div class="redirectToLogin">
@@ -49,5 +44,12 @@
         <span class="redirect" routerLink="/sign-in">Log In</span></span
       >
     </div>
+  </form>
   </div>
 </div>
+
+
+
+
+
+

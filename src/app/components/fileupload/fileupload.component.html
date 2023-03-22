@@ -1,0 +1,36 @@
+<input
+  type="file"
+  class="file-input"
+  accept=".mq5,.mq4"
+  (change)="onFileSelected($event)"
+  #fileUpload
+/>
+
+<div class="file-upload">
+  {{ fileName || "No file uploaded yet." }}
+
+  <button
+    mat-mini-fab
+    color="primary"
+    class="upload-btn"
+    (click)="fileUpload.click()"
+  >
+    <mat-icon>attach_file</mat-icon>
+  </button>
+
+  <ul>
+    <li
+      *ngFor="let element of variables"
+      [ngClass]="{ highlight: isHighlightable(element.type) }"
+    >
+      {{
+        element.type +
+          " " +
+          element.name +
+          " (default value: " +
+          element.defaultValue +
+          ")"
+      }}
+    </li>
+  </ul>
+</div>
