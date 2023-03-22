@@ -5,7 +5,7 @@ COPY package.json package-lock.json ./
 RUN npm install
 RUN npm install -g @angular/cli
 COPY . .
-RUN ng build --prod
+RUN ng build
 
 ### STAGE 2: Run ###
 FROM nginx:1.17.1-alpine
