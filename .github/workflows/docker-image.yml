@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag platform:$(date +%s)
+      run: docker build . --file Dockerfile --tag strat_service:$(date +%s)
     
     - name: Publish to Docker Hub
       uses: docker/build-push-action@v1
@@ -22,4 +22,3 @@ jobs:
         password: "stockbrood"
         repository: stockbrood/platform
         tags: latest
-
