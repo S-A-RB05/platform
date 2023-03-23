@@ -60,7 +60,6 @@ export class FileuploadComponent {
       reader.onload = () => {
         var base64Script = this.ReaderToContentBase64(reader);
         var stringScript = this.DecodeBase64(base64Script);
-        this.variables = this.ParseScriptForInputVariables(stringScript);
 
         this.uploadedStrat.name = this.exFile.name;
         this.uploadedStrat.ex = base64Script;
