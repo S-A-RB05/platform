@@ -18,7 +18,7 @@ jobs:
     - name: Publish to Docker Hub
       uses: docker/build-push-action@v1
       with:
-        username: "stockbrood"
-        password: "Stockbrood"
-        repository: stockbrood/platform
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ninoverhaegh/platform
         tags: latest
