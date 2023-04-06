@@ -1,17 +1,26 @@
 # Platform
 
+This platform is made for the automated trading 
+
 ## Run
 
-- http://localhost:4200/
+```
+  ng build
+```
 
-- ng serve
+```
+  http://localhost:4200/
+```
+
 
 ## Build
 
-- ng build
+```
+  ng build
+```
 
 ## Test
 
-- ng test
-
-
+```
+  ng build
+```
