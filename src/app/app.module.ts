@@ -21,7 +21,11 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { FileuploadComponent } from './components/fileupload/fileupload.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons';
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MaterialExampleModule } from '../material.module';
 
 @NgModule({
   declarations: [
@@ -47,6 +51,15 @@ import { CoolSocialLoginButtonsModule } from '@angular-cool/social-login-buttons
     AngularFireDatabaseModule,
     HttpClientModule,
     CoolSocialLoginButtonsModule,
+    MatSlideToggleModule,
+    MatSliderModule,
+    BrowserAnimationsModule,
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    MatNativeDateModule,
+    ReactiveFormsModule,
+    MaterialExampleModule,
   ],
   providers: [AuthService, HttpClientModule],
   bootstrap: [AppComponent],

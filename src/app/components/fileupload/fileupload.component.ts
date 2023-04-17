@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { InputVariable } from 'src/app/models/InputVariable';
 import { Strategy } from 'src/app/models/Strategy';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-fileupload',
@@ -119,7 +120,13 @@ export class FileuploadComponent {
           splittedLine[3].replace(';', '')
         );
         console.log(variable);
-        variables.push(variable);
+        if (
+          variable.type === 'int' ||
+          variable.type === 'double' || //only add to variables array if the type is int, double or bool. these are the only types you want to be able to change in the frontend.
+          variable.type === 'bool'
+        ) {
+          variables.push(variable);
+        }
       }
     });
     return variables;
@@ -134,5 +141,26 @@ export class FileuploadComponent {
 
   isHighlightable(type: string): boolean {
     return type === 'bool' || type === 'int' || type === 'double';
+  }
+
+  onSave() {
+    this.variables.forEach((element) => {
+      if (element.type === 'bool' && element.boolValue === undefined) {
+        element.boolValue = element.defaultValue.toLowerCase() === 'true';
+      } else if (element.type !== 'bool') {
+        if (element.start === undefined) {
+          element.start = Number(element.defaultValue);
+        }
+
+        if (element.end === undefined) {
+          element.end = Number(element.defaultValue);
+        }
+
+        if (element.step === undefined) {
+          element.step = Number(element.defaultValue);
+        }
+      }
+    });
+    console.log(this.variables);
   }
 }
