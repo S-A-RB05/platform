@@ -3,6 +3,7 @@ import { Component, NgModule } from '@angular/core';
 import { InputVariable } from 'src/app/models/InputVariable';
 import { Strategy } from 'src/app/models/Strategy';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TestData } from 'src/app/models/TestData';
 
 @Component({
   selector: 'app-fileupload',
@@ -12,6 +13,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 export class FileuploadComponent {
   mqFileName = '';
   exFileName = '';
+  FileID = '';
   variables: InputVariable[] = [];
 
   constructor(private http: HttpClient) {}
@@ -86,7 +88,19 @@ export class FileuploadComponent {
       requestBody,
       { responseType: 'text' }
     );
-    upload$.subscribe();
+
+    upload$.subscribe(
+      (response) => {
+        const newStrategyId = response; // store the response in a variable
+        this.FileID = response;
+        console.log('New strategy ID:', newStrategyId);
+        // do something with the newStrategyId here, such as updating your UI
+      },
+      (error) => {
+        console.error(error);
+        // handle the error here
+      }
+    );
   }
 
   ReaderToContentString(reader: FileReader): string {
@@ -144,6 +158,7 @@ export class FileuploadComponent {
   }
 
   onSave() {
+    var data = new TestData(this.FileID);
     this.variables.forEach((element) => {
       if (element.type === 'bool' && element.boolValue === undefined) {
         element.boolValue = element.defaultValue.toLowerCase() === 'true';
@@ -161,6 +176,7 @@ export class FileuploadComponent {
         }
       }
     });
-    console.log(this.variables);
+    data.variables = this.variables;
+    console.log(data);
   }
 }
