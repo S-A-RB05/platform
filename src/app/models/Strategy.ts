@@ -1,3 +1,8 @@
 export class Strategy {
-  constructor(public name?: string, public mq?: string, public ex?: string) {}
+  constructor(
+    public id: string,
+    public name?: string,
+    public mq?: string,
+    public ex?: string
+  ) {}
 }

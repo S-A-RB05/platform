@@ -1,7 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { InputVariable } from 'src/app/models/InputVariable';
 import { Strategy } from 'src/app/models/Strategy';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { TestData } from 'src/app/models/TestData';
 
 @Component({
   selector: 'app-fileupload',
@@ -11,6 +13,7 @@ import { Strategy } from 'src/app/models/Strategy';
 export class FileuploadComponent {
   mqFileName = '';
   exFileName = '';
+  FileID = '';
   variables: InputVariable[] = [];
 
   constructor(private http: HttpClient) {}
@@ -60,7 +63,6 @@ export class FileuploadComponent {
       reader.onload = () => {
         var base64Script = this.ReaderToContentBase64(reader);
         var stringScript = this.DecodeBase64(base64Script);
-        this.variables = this.ParseScriptForInputVariables(stringScript);
 
         this.uploadedStrat.name = this.exFile.name;
         this.uploadedStrat.ex = base64Script;
@@ -86,7 +88,19 @@ export class FileuploadComponent {
       requestBody,
       { responseType: 'text' }
     );
-    upload$.subscribe();
+
+    upload$.subscribe(
+      (response) => {
+        const newStrategyId = response; // store the response in a variable
+        this.FileID = response;
+        console.log('New strategy ID:', newStrategyId);
+        // do something with the newStrategyId here, such as updating your UI
+      },
+      (error) => {
+        console.error(error);
+        // handle the error here
+      }
+    );
   }
 
   ReaderToContentString(reader: FileReader): string {
@@ -120,7 +134,13 @@ export class FileuploadComponent {
           splittedLine[3].replace(';', '')
         );
         console.log(variable);
-        variables.push(variable);
+        if (
+          variable.type === 'int' ||
+          variable.type === 'double' || //only add to variables array if the type is int, double or bool. these are the only types you want to be able to change in the frontend.
+          variable.type === 'bool'
+        ) {
+          variables.push(variable);
+        }
       }
     });
     return variables;
@@ -135,5 +155,28 @@ export class FileuploadComponent {
 
   isHighlightable(type: string): boolean {
     return type === 'bool' || type === 'int' || type === 'double';
+  }
+
+  onSave() {
+    var data = new TestData(this.FileID);
+    this.variables.forEach((element) => {
+      if (element.type === 'bool' && element.boolValue === undefined) {
+        element.boolValue = element.defaultValue.toLowerCase() === 'true';
+      } else if (element.type !== 'bool') {
+        if (element.start === undefined) {
+          element.start = Number(element.defaultValue);
+        }
+
+        if (element.end === undefined) {
+          element.end = Number(element.defaultValue);
+        }
+
+        if (element.step === undefined) {
+          element.step = Number(element.defaultValue);
+        }
+      }
+    });
+    data.variables = this.variables;
+    console.log(data);
   }
 }
