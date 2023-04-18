@@ -103,6 +103,32 @@ export class FileuploadComponent {
     );
   }
 
+  StartTest(data: TestData) {
+    if (data.id == '') {
+      console.log(
+        'No test data available, did you upload your mq file and pressed save yet?'
+      );
+    }
+
+    const requestBody = JSON.stringify(data);
+
+    const upload$ = this.http.post(
+      'http://localhost:8081/updateconfig',
+      requestBody,
+      { responseType: 'text' }
+    );
+
+    upload$.subscribe(
+      (response) => {
+        // do something with reponse
+      },
+      (error) => {
+        console.error(error);
+        // handle the error here
+      }
+    );
+  }
+
   ReaderToContentString(reader: FileReader): string {
     var decode = reader.result as string;
     //encoded files always start with some information on how it was encoded, following by a ",".
@@ -178,5 +204,6 @@ export class FileuploadComponent {
     });
     data.variables = this.variables;
     console.log(data);
+    this.StartTest(data);
   }
 }
