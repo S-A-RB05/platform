@@ -4,6 +4,7 @@ import { InputVariable } from 'src/app/models/InputVariable';
 import { Strategy } from 'src/app/models/Strategy';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TestData } from 'src/app/models/TestData';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-fileupload',
@@ -16,7 +17,7 @@ export class FileuploadComponent {
   FileID = '';
   variables: InputVariable[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, public authService: AuthService) {}
 
   readonly headers = new HttpHeaders().set('Content-Type', 'application/json');
 
@@ -41,6 +42,8 @@ export class FileuploadComponent {
 
         this.uploadedStrat.name = this.mqFile.name;
         this.uploadedStrat.mq = base64Script;
+
+        this.uploadedStrat.userId;
         if (this.mqFile != undefined && this.exFile != undefined) {
           this.InitateUpload(this.uploadedStrat);
         } else {
@@ -66,12 +69,11 @@ export class FileuploadComponent {
 
         this.uploadedStrat.name = this.exFile.name;
         this.uploadedStrat.ex = base64Script;
+        this.uploadedStrat.userId = this.authService.userData.uid;
         if (this.mqFile != undefined && this.exFile != undefined) {
           this.InitateUpload(this.uploadedStrat);
         } else {
           console.log('not both files have a value yet');
-          console.log(this.mqFile);
-          console.log(this.exFile);
         }
       };
     }
