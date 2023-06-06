@@ -26,3 +26,9 @@ This platform is made by stockbrood. It works together with the [Strategy servic
 ```
   ng build
 ```
+
+## Enviroment variables
+
+```
+Change the enviroment varibales to your own needs. This concludes making your own firebase app
+```
