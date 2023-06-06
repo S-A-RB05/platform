@@ -14,6 +14,19 @@
   #exUpload
 />
 
+<h4>your strategies</h4>
+<mat-form-field>
+  <mat-label>Select a strategy</mat-label>
+  <mat-select
+    [(value)]="selectedStrat"
+    (selectionChange)="onSelectStrategy($event.value)"
+  >
+    <mat-option *ngFor="let strat of userStrats" [value]="strat">
+      {{ strat.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
 <div class="file-upload">
   {{ mqFileName || "No .mq(4/5) file uploaded yet." }}
 
@@ -25,22 +38,6 @@
   >
     <mat-icon>attach_file</mat-icon>
   </button>
-
-  <ul>
-    <li
-      *ngFor="let element of variables"
-      [ngClass]="{ highlight: isHighlightable(element.type) }"
-    >
-      {{
-        element.type +
-          " " +
-          element.name +
-          " (default value: " +
-          element.defaultValue +
-          ")"
-      }}
-    </li>
-  </ul>
 </div>
 
 <div class="file-upload">
@@ -54,12 +51,11 @@
   >
     <mat-icon>attach_file</mat-icon>
   </button>
+</div>
 
-  <ul>
-    <li
-      *ngFor="let element of variables"
-      [ngClass]="{ highlight: isHighlightable(element.type) }"
-    >
+<ul>
+  <li *ngFor="let element of variables">
+    <div *ngIf="element.type === 'int' || element.type === 'double'">
       {{
         element.type +
           " " +
@@ -68,6 +64,38 @@
           element.defaultValue +
           ")"
       }}
-    </li>
-  </ul>
-</div>
+      <mat-form-field class="example-margin example-width" appearance="fill">
+        <mat-label>Start</mat-label>
+        <input
+          matInput
+          type="number"
+          step="1"
+          [value]="element.defaultValue"
+          [(ngModel)]="element.start"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="example-margin example-width" appearance="fill">
+        <mat-label>End</mat-label>
+        <input matInput type="number" [(ngModel)]="element.end" />
+      </mat-form-field>
+
+      <mat-form-field class="example-margin example-width" appearance="fill">
+        <mat-label>Step</mat-label>
+        <input matInput type="number" [(ngModel)]="element.step" />
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="element.type === 'bool'">
+      {{ element.type + " " + element.name }}
+      <section class="example-section">
+        <mat-checkbox
+          [checked]="element.defaultValue"
+          [(ngModel)]="element.boolValue"
+          >{{ element.name }}</mat-checkbox
+        >
+      </section>
+    </div>
+  </li>
+</ul>
+<button mat-raised-button color="primary" (click)="onSave()">Save</button>
