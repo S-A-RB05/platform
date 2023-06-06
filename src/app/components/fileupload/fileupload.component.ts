@@ -16,6 +16,7 @@ export class FileuploadComponent {
   exFileName = '';
   FileID = '';
   variables: InputVariable[] = [];
+  userStrats: Strategy[] = this.getUserStrats(this.authService.userData.uid);
 
   constructor(private http: HttpClient, public authService: AuthService) {}
 
@@ -23,7 +24,21 @@ export class FileuploadComponent {
 
   private mqFile: File;
   private exFile: File;
-  private uploadedStrat: Strategy = new Strategy('test', 'test', 'test');
+  selectedStrat: Strategy = new Strategy('test', 'test', 'test');
+
+  onSelectStrategy(strat: Strategy) {
+    this.selectedStrat = strat;
+    console.log(
+      'the selected strategy is now: ' +
+        this.selectedStrat.name +
+        ' with id: ' +
+        this.selectedStrat.id
+    );
+
+    var stringScript = this.DecodeBase64(this.selectedStrat.mq);
+    this.variables = this.ParseScriptForInputVariables(stringScript);
+    this.FileID = strat.id;
+  }
 
   onMQFileSelected(event) {
     const file: File = event.target.files[0];
@@ -40,12 +55,12 @@ export class FileuploadComponent {
         var stringScript = this.DecodeBase64(base64Script);
         this.variables = this.ParseScriptForInputVariables(stringScript);
 
-        this.uploadedStrat.name = this.mqFile.name;
-        this.uploadedStrat.mq = base64Script;
+        this.selectedStrat.name = this.removeExtension(this.mqFile.name);
+        this.selectedStrat.mq = base64Script;
 
-        this.uploadedStrat.userId;
+        this.selectedStrat.userId;
         if (this.mqFile != undefined && this.exFile != undefined) {
-          this.InitateUpload(this.uploadedStrat);
+          this.InitateUpload(this.selectedStrat);
         } else {
           console.log('not both files have a value yet');
         }
@@ -67,16 +82,46 @@ export class FileuploadComponent {
         var base64Script = this.ReaderToContentBase64(reader);
         var stringScript = this.DecodeBase64(base64Script);
 
-        this.uploadedStrat.name = this.exFile.name;
-        this.uploadedStrat.ex = base64Script;
-        this.uploadedStrat.userId = this.authService.userData.uid;
+        this.selectedStrat.ex = base64Script;
+        this.selectedStrat.userId = this.authService.userData.uid;
         if (this.mqFile != undefined && this.exFile != undefined) {
-          this.InitateUpload(this.uploadedStrat);
+          this.InitateUpload(this.selectedStrat);
         } else {
           console.log('not both files have a value yet');
         }
       };
     }
+  }
+
+  getUserStrats(uid: string) {
+    var strats: Strategy[] = [];
+
+    const upload$ = this.http.get('http://localhost:10000/getall/' + uid);
+
+    upload$.subscribe(
+      (response) => {
+        // Convert the response to an array of strategy objects
+        Object.values(response).map((item: any) => {
+          // Assuming Strategy is the interface or class representing a strategy object
+          const strategy: Strategy = {
+            id: item._id,
+            userId: item.userid,
+            name: item.name,
+            mq: item.mq,
+            ex: item.ex,
+          };
+          strats.push(strategy);
+        });
+      },
+      (error) => {
+        console.error(error);
+        // handle the error here
+      }
+    );
+
+    console.log(strats);
+
+    return strats;
   }
 
   InitateUpload(strat: Strategy) {
@@ -183,6 +228,17 @@ export class FileuploadComponent {
 
   isHighlightable(type: string): boolean {
     return type === 'bool' || type === 'int' || type === 'double';
+  }
+
+  removeExtension(fileName: string): string {
+    const mqExtension = '.mq5';
+    const exExtension = '.ex5';
+    if (fileName.endsWith(mqExtension)) {
+      return fileName.slice(0, -mqExtension.length);
+    } else if (fileName.endsWith(exExtension)) {
+      return fileName.slice(0, -exExtension.length);
+    }
+    return fileName;
   }
 
   onSave() {

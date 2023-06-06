@@ -14,6 +14,19 @@
   #exUpload
 />
 
+<h4>your strategies</h4>
+<mat-form-field>
+  <mat-label>Select a strategy</mat-label>
+  <mat-select
+    [(value)]="selectedStrat"
+    (selectionChange)="onSelectStrategy($event.value)"
+  >
+    <mat-option *ngFor="let strat of userStrats" [value]="strat">
+      {{ strat.name }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
 <div class="file-upload">
   {{ mqFileName || "No .mq(4/5) file uploaded yet." }}
 
@@ -85,5 +98,4 @@
     </div>
   </li>
 </ul>
-
 <button mat-raised-button color="primary" (click)="onSave()">Save</button>
