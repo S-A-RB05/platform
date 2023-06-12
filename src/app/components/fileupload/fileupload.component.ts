@@ -2,7 +2,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, NgModule } from '@angular/core';
 import { InputVariable } from 'src/app/models/InputVariable';
 import { Strategy } from 'src/app/models/Strategy';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TestData } from 'src/app/models/TestData';
 import { AuthService } from '../../shared/services/auth.service';
 
@@ -40,8 +39,8 @@ export class FileuploadComponent {
     this.FileID = strat.id;
   }
 
-  onMQFileSelected(event) {
-    const file: File = event.target.files[0];
+  onMQFileUploaded(event) {
+    const file: File = event.target.files[0]; //set file as uploaded file
 
     if (file) {
       this.mqFile = file;
@@ -51,15 +50,16 @@ export class FileuploadComponent {
 
       reader.readAsDataURL(this.mqFile);
       reader.onload = () => {
-        var base64Script = this.ReaderToContentBase64(reader);
-        var stringScript = this.DecodeBase64(base64Script);
-        this.variables = this.ParseScriptForInputVariables(stringScript);
+        var base64Script = this.ReaderToContentBase64(reader); //read file and store as base64
+        var stringScript = this.DecodeBase64(base64Script); //convert base64 to actual contents of file
+        this.variables = this.ParseScriptForInputVariables(stringScript); //parse the contents of the file for input variables
 
         this.selectedStrat.name = this.removeExtension(this.mqFile.name);
         this.selectedStrat.mq = base64Script;
 
         this.selectedStrat.userId;
         if (this.mqFile != undefined && this.exFile != undefined) {
+          //only initiate upload if the user uploaded an mq file and ex file
           this.InitateUpload(this.selectedStrat);
         } else {
           console.log('not both files have a value yet');
@@ -68,7 +68,7 @@ export class FileuploadComponent {
     }
   }
 
-  onEXFileSelected(event) {
+  onEXFileUploaded(event) {
     const file: File = event.target.files[0];
 
     if (file) {
@@ -80,7 +80,6 @@ export class FileuploadComponent {
       reader.readAsDataURL(this.exFile);
       reader.onload = () => {
         var base64Script = this.ReaderToContentBase64(reader);
-        var stringScript = this.DecodeBase64(base64Script);
 
         this.selectedStrat.ex = base64Script;
         this.selectedStrat.userId = this.authService.userData.uid;
@@ -98,6 +97,7 @@ export class FileuploadComponent {
 
     const upload$ = this.http.get('http://localhost:10000/getall/' + uid);
 
+    //TODO: change deprecated "subscribe" method
     upload$.subscribe(
       (response) => {
         // Convert the response to an array of strategy objects
