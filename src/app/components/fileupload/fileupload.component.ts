@@ -131,7 +131,7 @@ export class FileuploadComponent {
     const requestBody = JSON.stringify(strat);
 
     const upload$ = this.http.post(
-      'localhost:10000/create',
+      'http://localhost:10000/create',
       requestBody,
       { responseType: 'text' }
     );
