@@ -95,7 +95,7 @@ export class FileuploadComponent {
   getUserStrats(uid: string) {
     var strats: Strategy[] = [];
 
-    const upload$ = this.http.get('strat-service:10000/getall/' + uid);
+    const upload$ = this.http.get('strat-service.development.svc.cluster.local/getall/' + uid);
 
     //TODO: change deprecated "subscribe" method
     upload$.subscribe(
@@ -131,7 +131,7 @@ export class FileuploadComponent {
     const requestBody = JSON.stringify(strat);
 
     const upload$ = this.http.post(
-      'strat-service:10000/create',
+      'strat-service.development.svc.cluster.local/create',
       requestBody,
       { responseType: 'text' }
     );
@@ -160,7 +160,7 @@ export class FileuploadComponent {
     const requestBody = JSON.stringify(data);
 
     const upload$ = this.http.post(
-      'test-manager:8081/updateconfig',
+      'test-manager.development.svc.cluster.local/updateconfig',
       requestBody,
       { responseType: 'text' }
     );
