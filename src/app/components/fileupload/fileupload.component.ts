@@ -95,7 +95,7 @@ export class FileuploadComponent {
   getUserStrats(uid: string) {
     var strats: Strategy[] = [];
 
-    const upload$ = this.http.get('localhost:10000/getall/' + uid);
+    const upload$ = this.http.get('http://localhost:10000/getall/' + uid);
 
     //TODO: change deprecated "subscribe" method
     upload$.subscribe(
@@ -160,7 +160,7 @@ export class FileuploadComponent {
     const requestBody = JSON.stringify(data);
 
     const upload$ = this.http.post(
-      'localhost:8081/updateconfig',
+      'http://localhost:8081/updateconfig',
       requestBody,
       { responseType: 'text' }
     );
